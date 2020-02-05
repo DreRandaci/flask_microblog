@@ -1,3 +1,4 @@
 {
-  "python.pythonPath": "microblog_venv/bin/python3"
+  "python.pythonPath": "microblog_venv/bin/python3",
+  "prettier.useTabs": true
 }
