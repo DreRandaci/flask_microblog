@@ -14,6 +14,7 @@ class User(UserMixin, db.Model):
     posts = db.relationship("Post", backref="author", lazy="dynamic")
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, password):
         self.password = password
@@ -37,9 +38,25 @@ class Post(db.Model):
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return "<Post {}>".format(self.body)
+
+
+class UserFollower(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    follower_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
+    __table_args__ = (
+        UniqueConstraint("user_id", "follower_id", name="_user_follower_uc"),
+    )
+
+    def __repr__(self):
+        return "<user_id {}, follower_id {}>".format(
+            self.user_id, self.user_follower_id
+        )
 
 
 @login.user_loader
